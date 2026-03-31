@@ -3,70 +3,56 @@
 @tailwind utilities;
 
 @font-face {
-  font-family: "Bricolage Grotesque";
+  font-family: "Playfair Display";
   font-style: normal;
-  font-weight: 200 800;
+  font-weight: 400 800;
   font-display: swap;
-  src: url("/assets/fonts/BricolageGrotesque.woff2") format("woff2");
+  src: url("/assets/fonts/PlayfairDisplay.woff2") format("woff2");
 }
 
 @font-face {
-  font-family: "General Sans";
+  font-family: "Plus Jakarta Sans";
   font-style: normal;
-  font-weight: 200 700;
+  font-weight: 300 700;
   font-display: swap;
-  src: url("/assets/fonts/GeneralSans.woff2") format("woff2");
+  src: url("/assets/fonts/PlusJakartaSans.woff2") format("woff2");
 }
 
 @layer base {
   :root {
-    --radius: 0.75rem;
-
-    /* Light professional navy blue theme */
-    --background: 0.98 0.005 255;
-    --foreground: 0.15 0.025 255;
-
-    --card: 1 0 0;
-    --card-foreground: 0.15 0.025 255;
-
-    --popover: 1 0 0;
-    --popover-foreground: 0.15 0.025 255;
-
-    /* Deep navy blue */
-    --primary: 0.3 0.165 255;
-    --primary-foreground: 0.97 0.008 255;
-
-    /* Warm amber for accent CTAs */
-    --secondary: 0.76 0.17 76;
-    --secondary-foreground: 0.12 0.02 76;
-
-    --muted: 0.94 0.012 255;
-    --muted-foreground: 0.46 0.045 255;
-
-    --accent: 0.5 0.13 255;
-    --accent-foreground: 0.97 0.008 255;
-
+    --radius: 1rem;
+    --background: 0.12 0.04 290;
+    --foreground: 0.95 0.01 290;
+    --card: 0.18 0.05 290;
+    --card-foreground: 0.95 0.01 290;
+    --popover: 0.18 0.05 290;
+    --popover-foreground: 0.95 0.01 290;
+    --primary: 0.55 0.22 290;
+    --primary-foreground: 1 0 0;
+    --secondary: 0.62 0.18 195;
+    --secondary-foreground: 1 0 0;
+    --muted: 0.22 0.05 290;
+    --muted-foreground: 0.65 0.06 290;
+    --accent: 0.72 0.2 195;
+    --accent-foreground: 0.1 0.02 290;
     --destructive: 0.577 0.245 27.325;
     --destructive-foreground: 0.985 0 0;
-
-    --border: 0.88 0.018 255;
-    --input: 0.88 0.018 255;
-    --ring: 0.3 0.165 255;
-
-    --chart-1: 0.3 0.165 255;
-    --chart-2: 0.5 0.13 255;
-    --chart-3: 0.76 0.17 76;
-    --chart-4: 0.65 0.14 255;
-    --chart-5: 0.46 0.1 255;
-
-    --sidebar: 0.94 0.012 255;
-    --sidebar-foreground: 0.15 0.025 255;
-    --sidebar-primary: 0.3 0.165 255;
-    --sidebar-primary-foreground: 0.97 0.008 255;
-    --sidebar-accent: 0.9 0.015 255;
-    --sidebar-accent-foreground: 0.15 0.025 255;
-    --sidebar-border: 0.88 0.018 255;
-    --sidebar-ring: 0.3 0.165 255;
+    --border: 0.28 0.06 290;
+    --input: 0.28 0.06 290;
+    --ring: 0.55 0.22 290;
+    --chart-1: 0.55 0.22 290;
+    --chart-2: 0.62 0.18 195;
+    --chart-3: 0.72 0.2 195;
+    --chart-4: 0.45 0.18 290;
+    --chart-5: 0.65 0.16 290;
+    --sidebar: 0.16 0.045 290;
+    --sidebar-foreground: 0.95 0.01 290;
+    --sidebar-primary: 0.55 0.22 290;
+    --sidebar-primary-foreground: 1 0 0;
+    --sidebar-accent: 0.22 0.05 290;
+    --sidebar-accent-foreground: 0.95 0.01 290;
+    --sidebar-border: 0.28 0.06 290;
+    --sidebar-ring: 0.55 0.22 290;
   }
 
   * {
@@ -75,89 +61,707 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: "General Sans", system-ui, sans-serif;
+    font-family: "Plus Jakarta Sans", system-ui, sans-serif;
     min-height: 100vh;
   }
 
   html {
-    color-scheme: light;
+    color-scheme: dark;
     scroll-behavior: smooth;
   }
 }
 
 @layer components {
-  .hero-gradient {
+  .card-page {
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem 1rem;
+    position: relative;
+    overflow: hidden;
     background: linear-gradient(
       135deg,
-      oklch(0.22 0.165 255) 0%,
-      oklch(0.3 0.165 255) 60%,
-      oklch(0.38 0.155 255) 100%
+      oklch(0.1 0.1 290) 0%,
+      oklch(0.14 0.14 270) 35%,
+      oklch(0.16 0.12 230) 65%,
+      oklch(0.18 0.09 200) 100%
     );
   }
 
-  .cta-call {
-    @apply inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-semibold text-base transition-all duration-200;
-    background: oklch(1 0 0);
-    color: oklch(0.22 0.165 255);
-    box-shadow: 0 4px 14px oklch(0 0 0 / 0.2);
+  .orb {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(80px);
+    pointer-events: none;
+    animation: float 8s ease-in-out infinite;
   }
-  .cta-call:hover {
+  .orb-1 {
+    width: 420px;
+    height: 420px;
+    top: -120px;
+    left: -100px;
+    background: oklch(0.45 0.25 290 / 0.35);
+    animation-delay: 0s;
+  }
+  .orb-2 {
+    width: 320px;
+    height: 320px;
+    bottom: -80px;
+    right: -80px;
+    background: oklch(0.52 0.2 195 / 0.28);
+    animation-delay: 3s;
+  }
+  .orb-3 {
+    width: 240px;
+    height: 240px;
+    top: 45%;
+    left: 55%;
+    background: oklch(0.6 0.22 250 / 0.18);
+    animation-delay: 5.5s;
+  }
+
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0) scale(1);
+    }
+    50% {
+      transform: translateY(-24px) scale(1.04);
+    }
+  }
+
+  .card-wrapper {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 420px;
+  }
+
+  .glass-card {
+    background: oklch(1 0 0 / 0.07);
+    backdrop-filter: blur(24px) saturate(1.6);
+    -webkit-backdrop-filter: blur(24px) saturate(1.6);
+    border: 1px solid oklch(1 0 0 / 0.15);
+    border-radius: 2rem;
+    padding: 2rem 1.75rem;
+    box-shadow: 0 8px 48px oklch(0.3 0.2 290 / 0.4), 0 2px 8px
+      oklch(0 0 0 / 0.3), inset 0 1px 0 oklch(1 0 0 / 0.12);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.1rem;
+  }
+
+  /* ── Brand Header ── */
+  .brand-header {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    width: 100%;
+  }
+
+  .brand-title {
+    font-family: "Playfair Display", serif;
+    font-size: 1.85rem;
+    font-weight: 800;
+    color: #00e5ff;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    text-shadow: 0 0 24px oklch(0.75 0.22 195 / 0.55);
+  }
+
+  .brand-subtitle {
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: #00e5ff;
+    opacity: 0.85;
+    letter-spacing: 0.02em;
+  }
+
+  .brand-tagline {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: oklch(0.96 0.01 0);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-top: 0.1rem;
+  }
+
+  /* ── Profile ── */
+  .profile-ring {
+    padding: 4px;
+    border-radius: 9999px;
+    background: linear-gradient(135deg, #00e5ff, oklch(0.62 0.2 195));
+    box-shadow: 0 0 32px oklch(0.7 0.22 195 / 0.55);
+  }
+
+  .profile-img {
+    width: 110px;
+    height: 110px;
+    border-radius: 9999px;
+    object-fit: cover;
+    display: block;
+    border: 3px solid oklch(0.12 0.06 290);
+  }
+
+  /* ── Identity ── */
+  .identity {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .name {
+    font-family: "Playfair Display", serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #fbbf24;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    text-shadow: 0 2px 12px oklch(0.7 0.2 80 / 0.4);
+  }
+
+  .title {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: oklch(0.92 0.02 290);
+  }
+
+  /* ── Contact Info ── */
+  .contact-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35rem;
+    width: 100%;
+  }
+
+  .contact-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    font-size: 0.86rem;
+    color: oklch(0.88 0.04 290);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+
+  .contact-row:hover {
+    color: #00e5ff;
+  }
+
+  .contact-icon {
+    font-size: 1rem;
+    line-height: 1;
+  }
+
+  /* ── Divider ── */
+  .divider {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      oklch(1 0 0 / 0.15),
+      transparent
+    );
+  }
+
+  /* ── Action Buttons (full-width pill) ── */
+  .actions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    width: 100%;
+  }
+
+  .action-pill {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 0.85rem 1.5rem;
+    width: 100%;
+    border-radius: 9999px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, filter 0.18s ease;
+    border: none;
+    color: #ffffff;
+    text-decoration: none;
+    letter-spacing: 0.01em;
+  }
+
+  .action-pill:hover {
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px oklch(0 0 0 / 0.25);
-  }
-  .cta-call:active {
-    transform: translateY(0);
+    filter: brightness(1.1);
   }
 
-  .cta-whatsapp {
-    @apply inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl font-semibold text-base transition-all duration-200;
-    background: oklch(0.62 0.21 150);
+  .action-pill:active {
+    transform: translateY(0) scale(0.97);
+    filter: brightness(0.95);
+  }
+
+  .pill-icon {
+    font-size: 1.2rem;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  /* Amber / orange-yellow gradient */
+  .action-pill-amber {
+    background: linear-gradient(135deg, #f59e0b, #f97316);
+    box-shadow: 0 4px 18px oklch(0.7 0.2 60 / 0.45);
+  }
+
+  /* Bright blue */
+  .action-pill-blue {
+    background: linear-gradient(135deg, #2563eb, #3b82f6);
+    box-shadow: 0 4px 18px oklch(0.5 0.25 265 / 0.45);
+  }
+
+  /* WhatsApp green */
+  .action-pill-green {
+    background: linear-gradient(135deg, #16a34a, #22c55e);
+    box-shadow: 0 4px 18px oklch(0.6 0.2 145 / 0.45);
+  }
+
+  /* Red-to-magenta gradient */
+  .action-pill-red {
+    background: linear-gradient(135deg, #dc2626, #e11d9a);
+    box-shadow: 0 4px 18px oklch(0.55 0.25 20 / 0.45);
+  }
+
+  /* Purple/violet */
+  .action-pill-purple {
+    background: linear-gradient(135deg, #7c3aed, #a855f7);
+    box-shadow: 0 4px 18px oklch(0.5 0.3 300 / 0.45);
+  }
+
+  /* WhatsApp-style deep green (share) */
+  .action-pill-whatsapp {
+    background: linear-gradient(135deg, #128c7e, #25d366);
+    box-shadow: 0 4px 18px oklch(0.6 0.2 165 / 0.45);
+  }
+
+  /* Cyan/sky blue (QR) */
+  .action-pill-cyan {
+    background: linear-gradient(135deg, #0891b2, #06b6d4);
+    box-shadow: 0 4px 18px oklch(0.65 0.2 200 / 0.45);
+  }
+
+  /* ── QR Section ── */
+  .qr-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+    overflow: hidden;
+    width: 100%;
+  }
+
+  .qr-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #00e5ff;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    text-align: center;
+  }
+
+  .qr-box {
+    padding: 1rem;
+    border-radius: 1rem;
+    background: #fff;
+    border: 2px solid oklch(1 0 0 / 0.2);
+    box-shadow: 0 4px 24px oklch(0 0 0 / 0.3);
+  }
+
+  /* ── Sections ── */
+  .section-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+  }
+
+  .section-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: oklch(0.6 0.07 290);
+    text-align: center;
+    width: 100%;
+  }
+
+  .testimonials {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+  }
+
+  .testimonial-card {
+    background: oklch(1 0 0 / 0.06);
+    border: 1px solid oklch(1 0 0 / 0.1);
+    border-radius: 1rem;
+    padding: 0.85rem 1rem;
+    font-size: 0.82rem;
+    color: oklch(0.8 0.04 290);
+    line-height: 1.5;
+  }
+
+  .testimonial-author {
+    margin-top: 0.35rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: oklch(0.62 0.18 195);
+  }
+
+  .portfolio-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.6rem;
+    width: 100%;
+  }
+
+  .portfolio-tile {
+    border-radius: 0.85rem;
+    padding: 0.75rem 0.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.62rem;
+    text-align: center;
+    color: oklch(0.95 0.01 290);
+  }
+
+  .portfolio-tile-1 {
+    background: linear-gradient(
+      135deg,
+      oklch(0.35 0.2 290),
+      oklch(0.28 0.15 260)
+    );
+  }
+
+  .portfolio-tile-2 {
+    background: linear-gradient(
+      135deg,
+      oklch(0.32 0.18 195),
+      oklch(0.28 0.14 220)
+    );
+  }
+
+  .portfolio-tile-3 {
+    background: linear-gradient(
+      135deg,
+      oklch(0.38 0.16 250),
+      oklch(0.3 0.12 290)
+    );
+  }
+
+  .portfolio-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 9999px;
+    background: oklch(1 0 0 / 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
     color: oklch(1 0 0);
-    box-shadow: 0 4px 14px oklch(0.62 0.21 150 / 0.35);
-  }
-  .cta-whatsapp:hover {
-    transform: translateY(-2px);
-    background: oklch(0.55 0.2 150);
-    box-shadow: 0 8px 20px oklch(0.62 0.21 150 / 0.45);
-  }
-  .cta-whatsapp:active {
-    transform: translateY(0);
+    margin-bottom: 0.1rem;
   }
 
-  .service-card {
-    @apply bg-card rounded-2xl p-6 border border-border;
-    box-shadow: 0 2px 12px oklch(0 0 0 / 0.06);
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-  }
-  .service-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 28px oklch(0 0 0 / 0.1);
-  }
-
-  .reason-card {
-    @apply flex items-start gap-4 bg-card rounded-xl p-5 border border-border;
-    box-shadow: 0 1px 6px oklch(0 0 0 / 0.05);
-  }
-
-  .contact-btn-call {
-    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm transition-all duration-200 w-full;
-    background: oklch(0.3 0.165 255);
-    color: oklch(0.97 0.008 255);
-    box-shadow: 0 3px 10px oklch(0.3 0.165 255 / 0.3);
-  }
-  .contact-btn-call:hover {
-    background: oklch(0.25 0.165 255);
-    transform: translateY(-1px);
-  }
-
-  .contact-btn-whatsapp {
-    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-semibold text-sm transition-all duration-200 w-full;
-    background: oklch(0.62 0.21 150);
+  .portfolio-name {
+    font-weight: 700;
+    font-size: 0.68rem;
     color: oklch(1 0 0);
-    box-shadow: 0 3px 10px oklch(0.62 0.21 150 / 0.3);
   }
-  .contact-btn-whatsapp:hover {
-    background: oklch(0.55 0.2 150);
-    transform: translateY(-1px);
+
+  .portfolio-role {
+    font-size: 0.6rem;
+    color: oklch(0.85 0.05 290);
+  }
+
+  .portfolio-company {
+    font-size: 0.6rem;
+    color: oklch(0.75 0.12 195);
+    font-weight: 600;
+  }
+
+  .portfolio-dots {
+    display: flex;
+    gap: 4px;
+    margin-top: 0.25rem;
+  }
+
+  .portfolio-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: oklch(1 0 0 / 0.5);
+  }
+
+  /* ── Footer ── */
+  .card-footer {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    font-size: 0.73rem;
+    color: oklch(0.48 0.05 290);
+    width: 100%;
+  }
+
+  .footer-cta {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #00e5ff;
+    opacity: 0.8;
+  }
+
+  .footer-link {
+    color: oklch(0.62 0.18 195);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    transition: opacity 0.15s;
+  }
+
+  .footer-link:hover {
+    opacity: 0.75;
+  }
+}
+
+/* ── Admin Panel Styles ── */
+@layer components {
+  .admin-login-link {
+    margin-top: 0.5rem;
+    font-size: 0.65rem;
+    color: oklch(0.55 0.05 290);
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    padding: 0.25rem 0.5rem;
+    opacity: 0.6;
+    transition: opacity 0.15s;
+  }
+  .admin-login-link:hover {
+    opacity: 1;
+  }
+  .admin-login-link:disabled {
+    cursor: not-allowed;
+    opacity: 0.4;
+  }
+
+  .floating-edit-btn {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0.45rem 1rem;
+    border-radius: 9999px;
+    background: oklch(0.72 0.18 195);
+    color: oklch(0.12 0.02 210);
+    font-size: 0.78rem;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 16px oklch(0.72 0.18 195 / 0.45);
+    transition: box-shadow 0.2s, background 0.2s;
+  }
+  .floating-edit-btn:hover {
+    background: oklch(0.8 0.18 195);
+    box-shadow: 0 6px 24px oklch(0.72 0.18 195 / 0.6);
+  }
+
+  .admin-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: oklch(0.06 0.02 270 / 0.85);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+
+  .admin-panel {
+    width: 100%;
+    max-width: 480px;
+    max-height: 90vh;
+    overflow-y: auto;
+    background: oklch(0.13 0.05 270 / 0.96);
+    border: 1px solid oklch(1 0 0 / 0.1);
+    border-radius: 1.25rem;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    box-shadow: 0 24px 64px oklch(0 0 0 / 0.6);
+  }
+
+  .admin-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .admin-panel-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: oklch(0.95 0.05 195);
+  }
+
+  .admin-icon-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: oklch(1 0 0 / 0.08);
+    border: none;
+    cursor: pointer;
+    color: oklch(0.7 0.05 290);
+    transition: background 0.15s, color 0.15s;
+  }
+  .admin-icon-btn:hover {
+    background: oklch(1 0 0 / 0.16);
+    color: oklch(0.95 0.01 290);
+  }
+
+  .admin-photo-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .admin-photo-preview {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid oklch(0.72 0.18 195 / 0.6);
+  }
+
+  .admin-upload-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0.4rem 0.9rem;
+    border-radius: 9999px;
+    background: oklch(1 0 0 / 0.08);
+    border: 1px solid oklch(1 0 0 / 0.15);
+    color: oklch(0.75 0.1 195);
+    font-size: 0.78rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .admin-upload-btn:hover:not(:disabled) {
+    background: oklch(1 0 0 / 0.14);
+  }
+  .admin-upload-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .admin-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .admin-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+
+  .admin-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: oklch(0.65 0.1 195);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .admin-input {
+    width: 100%;
+    padding: 0.55rem 0.85rem;
+    border-radius: 0.6rem;
+    background: oklch(1 0 0 / 0.07);
+    border: 1px solid oklch(1 0 0 / 0.12);
+    color: oklch(0.92 0.02 290);
+    font-size: 0.88rem;
+    outline: none;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .admin-input:focus {
+    border-color: oklch(0.72 0.18 195 / 0.7);
+    background: oklch(1 0 0 / 0.1);
+  }
+
+  .admin-actions {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: flex-end;
+  }
+
+  .admin-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0.55rem 1.25rem;
+    border-radius: 9999px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+    transition: opacity 0.15s, box-shadow 0.15s;
+  }
+  .admin-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .admin-btn-cancel {
+    background: oklch(1 0 0 / 0.08);
+    color: oklch(0.7 0.05 290);
+    border: 1px solid oklch(1 0 0 / 0.12);
+  }
+  .admin-btn-cancel:hover:not(:disabled) {
+    background: oklch(1 0 0 / 0.14);
+  }
+
+  .admin-btn-save {
+    background: oklch(0.72 0.18 195);
+    color: oklch(0.12 0.02 210);
+    box-shadow: 0 2px 12px oklch(0.72 0.18 195 / 0.4);
+  }
+  .admin-btn-save:hover:not(:disabled) {
+    opacity: 0.9;
+    box-shadow: 0 4px 18px oklch(0.72 0.18 195 / 0.55);
   }
 }
