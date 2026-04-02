@@ -1,8 +1,6 @@
-import { Skeleton } from "@/components/ui/skeleton";
 import { Toaster } from "@/components/ui/sonner";
 import { HttpAgent } from "@icp-sdk/core/agent";
 import { Loader2, LogOut, Upload, X } from "lucide-react";
-import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import type { Card } from "./backend";
@@ -12,6 +10,18 @@ import { useInternetIdentity } from "./hooks/useInternetIdentity";
 import { StorageClient } from "./utils/StorageClient";
 
 const DEFAULT_PROFILE_IMG = `${import.meta.env.BASE_URL}assets/uploads/nagarajan-profile.png`;
+
+const FALLBACK_CARD: Card = {
+  name: "Nagarajan",
+  jobTitle: "Sales Officer",
+  company: "InstaSite Kerala",
+  bio: "Premium Digital Business Cards & Websites",
+  phone: "+918838510443",
+  email: "cynorlux@gmail.com",
+  location: "Thiruvananthapuram",
+  website: "https://instasite.in",
+  profilePhotoUrl: "",
+};
 
 function buildVCard(card: Card): string {
   return `BEGIN:VCARD
@@ -53,49 +63,6 @@ async function shareCard(card: Card) {
     const msg = encodeURIComponent(`${shareData.text}\n${shareData.url}`);
     window.open(`https://wa.me/?text=${msg}`, "_blank", "noopener,noreferrer");
   }
-}
-
-// ─── Card Skeleton ──────────────────────────────────────────────────────────
-function CardSkeleton() {
-  return (
-    <div
-      className="glass-card"
-      style={{
-        gap: 16,
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-      }}
-    >
-      <Skeleton
-        className="h-6 w-40 rounded-full"
-        style={{ background: "rgba(255,255,255,0.15)" }}
-      />
-      <Skeleton
-        className="h-4 w-56 rounded-full"
-        style={{ background: "rgba(255,255,255,0.1)" }}
-      />
-      <Skeleton
-        className="h-24 w-24 rounded-full"
-        style={{ background: "rgba(255,255,255,0.15)" }}
-      />
-      <Skeleton
-        className="h-6 w-32 rounded-full"
-        style={{ background: "rgba(255,255,255,0.15)" }}
-      />
-      <Skeleton
-        className="h-4 w-24 rounded-full"
-        style={{ background: "rgba(255,255,255,0.1)" }}
-      />
-      {[1, 2, 3, 4, 5].map((i) => (
-        <Skeleton
-          key={i}
-          className="h-12 w-full rounded-full"
-          style={{ background: "rgba(255,255,255,0.1)" }}
-        />
-      ))}
-    </div>
-  );
 }
 
 // ─── Admin Edit Modal ────────────────────────────────────────────────────────
@@ -185,20 +152,8 @@ function AdminModal({ card, onClose, onSaved }: AdminModalProps) {
   ];
 
   return (
-    <motion.div
-      className="admin-overlay"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      data-ocid="admin.modal"
-    >
-      <motion.div
-        className="admin-panel"
-        initial={{ opacity: 0, y: 40, scale: 0.95 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        exit={{ opacity: 0, y: 40, scale: 0.95 }}
-        transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-      >
+    <div className="admin-overlay admin-overlay-in" data-ocid="admin.modal">
+      <div className="admin-panel admin-panel-in">
         <div className="admin-panel-header">
           <h2 className="admin-panel-title">Edit Card</h2>
           <div style={{ display: "flex", gap: 8 }}>
@@ -291,8 +246,8 @@ function AdminModal({ card, onClose, onSaved }: AdminModalProps) {
             {saving ? "Saving..." : "Save Changes"}
           </button>
         </div>
-      </motion.div>
-    </motion.div>
+      </div>
+    </div>
   );
 }
 
@@ -300,8 +255,7 @@ function AdminModal({ card, onClose, onSaved }: AdminModalProps) {
 export default function App() {
   const year = new Date().getFullYear();
   const [showQR, setShowQR] = useState(false);
-  const [card, setCard] = useState<Card | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [card, setCard] = useState<Card>(FALLBACK_CARD);
   const [showAdmin, setShowAdmin] = useState(false);
   const [_isAdmin, setIsAdmin] = useState(false);
   const [checkingAdmin, setCheckingAdmin] = useState(false);
@@ -309,7 +263,7 @@ export default function App() {
   const { login, isLoggingIn, identity } = useInternetIdentity();
   const { actor, isFetching } = useActor();
 
-  // Load public card data on mount (anonymous)
+  // Load public card data in background (no skeleton — show fallback immediately)
   useEffect(() => {
     let cancelled = false;
     async function fetchCard() {
@@ -318,22 +272,7 @@ export default function App() {
         const data = await anonActor.getPublicCard();
         if (!cancelled) setCard(data);
       } catch {
-        if (!cancelled) {
-          // fallback static data
-          setCard({
-            name: "Nagarajan",
-            jobTitle: "Sales Officer",
-            company: "InstaSite Kerala",
-            bio: "Premium Digital Business Cards & Websites",
-            phone: "+918838510443",
-            email: "cynorlux@gmail.com",
-            location: "Thiruvananthapuram",
-            website: "https://instasite.in",
-            profilePhotoUrl: "",
-          });
-        }
-      } finally {
-        if (!cancelled) setLoading(false);
+        // keep showing fallback data silently
       }
     }
     fetchCard();
@@ -375,288 +314,222 @@ export default function App() {
     if (!identity) setIsAdmin(false);
   }, [identity]);
 
-  const profileImg = card?.profilePhotoUrl
+  const profileImg = card.profilePhotoUrl
     ? card.profilePhotoUrl
     : DEFAULT_PROFILE_IMG;
-  const vcard = card ? buildVCard(card) : "";
+  const vcard = buildVCard(card);
 
   return (
     <div className="card-page" data-ocid="card.page">
       <Toaster position="top-center" richColors />
       <div className="orb orb-1" />
       <div className="orb orb-2" />
-      <div className="orb orb-3" />
 
       <main className="card-wrapper">
-        {loading ? (
-          <CardSkeleton />
-        ) : (
-          <motion.div
-            className="glass-card"
-            initial={{ opacity: 0, y: 32, scale: 0.96 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+        <div className="glass-card fade-in-card">
+          {/* Brand Header */}
+          <div className="brand-header fade-in-up">
+            <h2 className="brand-title">{card.company}</h2>
+            <p className="brand-subtitle">{card.bio}</p>
+            <p className="brand-tagline">Build. Launch. Grow.</p>
+          </div>
+
+          <div className="divider" />
+
+          {/* Profile Photo */}
+          <div className="profile-ring fade-in-up fade-in-up-d1">
+            <img
+              src={profileImg}
+              alt={`${card.name} — ${card.jobTitle}, ${card.company}`}
+              className="profile-img"
+              width={110}
+              height={110}
+              fetchPriority="high"
+            />
+          </div>
+
+          {/* Identity */}
+          <div className="identity fade-in-up fade-in-up-d2">
+            <h1 className="name">{card.name}</h1>
+            <p className="title">{card.jobTitle}</p>
+          </div>
+
+          {/* Contact Info */}
+          <div className="contact-info fade-in-up fade-in-up-d3">
+            {card.phone && (
+              <a
+                href={`tel:${card.phone}`}
+                className="contact-row"
+                data-ocid="card.link"
+              >
+                <span className="contact-icon">📞</span>
+                <span>{card.phone}</span>
+              </a>
+            )}
+            {card.email && (
+              <a
+                href={`mailto:${card.email}`}
+                className="contact-row"
+                data-ocid="card.link"
+              >
+                <span className="contact-icon">📧</span>
+                <span>{card.email}</span>
+              </a>
+            )}
+            {card.location && (
+              <div className="contact-row">
+                <span className="contact-icon">📍</span>
+                <span>{card.location}</span>
+              </div>
+            )}
+          </div>
+
+          <div className="divider" />
+
+          {/* Full-width action buttons */}
+          <div
+            className="actions-list fade-in-up fade-in-up-d4"
+            data-ocid="card.section"
           >
-            {/* Brand Header */}
-            <motion.div
-              className="brand-header"
-              initial={{ opacity: 0, y: -12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1, duration: 0.45 }}
+            <button
+              type="button"
+              onClick={() => saveContact(card)}
+              className="action-pill action-pill-amber"
+              data-ocid="card.save.button"
             >
-              <h2 className="brand-title">
-                {card?.company || "InstaSite Kerala"}
-              </h2>
-              <p className="brand-subtitle">
-                {card?.bio || "Premium Digital Business Cards & Websites"}
-              </p>
-              <p className="brand-tagline">Build. Launch. Grow.</p>
-            </motion.div>
+              <span className="pill-icon">💾</span>
+              <span>Save Contact</span>
+            </button>
 
-            <div className="divider" />
+            {card.phone && (
+              <a
+                href={`tel:${card.phone}`}
+                className="action-pill action-pill-blue"
+                data-ocid="card.call.button"
+              >
+                <span className="pill-icon">📞</span>
+                <span>Call Now</span>
+              </a>
+            )}
 
-            {/* Profile Photo */}
-            <motion.div
-              className="profile-ring"
-              initial={{ scale: 0.6, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.2, duration: 0.5, ease: "backOut" }}
+            {card.phone && (
+              <a
+                href={`https://wa.me/${card.phone.replace(/[^0-9]/g, "")}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="action-pill action-pill-green"
+                data-ocid="card.whatsapp.button"
+              >
+                <span className="pill-icon">💬</span>
+                <span>WhatsApp</span>
+              </a>
+            )}
+
+            {card.location && (
+              <a
+                href={`https://maps.google.com/?q=${encodeURIComponent(`${card.location},India`)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="action-pill action-pill-red"
+                data-ocid="card.location.button"
+              >
+                <span className="pill-icon">📍</span>
+                <span>Location</span>
+              </a>
+            )}
+
+            {card.website && (
+              <a
+                href={card.website}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="action-pill action-pill-purple"
+                data-ocid="card.website.button"
+              >
+                <span className="pill-icon">🌐</span>
+                <span>Visit Website</span>
+              </a>
+            )}
+
+            <button
+              type="button"
+              onClick={() => shareCard(card)}
+              className="action-pill action-pill-whatsapp"
+              data-ocid="card.share.button"
             >
+              <span className="pill-icon">🔗</span>
+              <span>Share this Card</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setShowQR((v) => !v)}
+              className="action-pill action-pill-cyan"
+              data-ocid="card.qr.button"
+            >
+              <span className="pill-icon">📱</span>
+              <span>{showQR ? "Hide QR Code" : "Show QR Code"}</span>
+            </button>
+          </div>
+
+          {/* QR Code — always in DOM to avoid CLS, toggled with visibility */}
+          <div
+            className="qr-section"
+            style={{
+              visibility: showQR ? "visible" : "hidden",
+              height: showQR ? "auto" : 0,
+              overflow: showQR ? "visible" : "hidden",
+              marginTop: showQR ? undefined : 0,
+            }}
+            data-ocid="card.panel"
+          >
+            <p className="qr-label">Scan to Save Contact Instantly</p>
+            <div className="qr-box">
               <img
-                src={profileImg}
-                alt={`${card?.name || ""} — ${card?.jobTitle || ""}, ${card?.company || ""}`}
-                className="profile-img"
+                src={`https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=${encodeURIComponent(vcard)}&color=0b3d91&bgcolor=ffffff`}
+                alt={`QR Code to save ${card.name} contact`}
+                width={140}
+                height={140}
+                style={{ display: "block" }}
               />
-            </motion.div>
+            </div>
+          </div>
 
-            {/* Identity */}
-            <motion.div
-              className="identity"
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.45 }}
-            >
-              <h1 className="name">{card?.name || "Nagarajan"}</h1>
-              <p className="title">{card?.jobTitle || "Sales Officer"}</p>
-            </motion.div>
+          <div className="divider" />
 
-            {/* Contact Info */}
-            <motion.div
-              className="contact-info"
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.38, duration: 0.4 }}
-            >
-              {card?.phone && (
-                <a
-                  href={`tel:${card.phone}`}
-                  className="contact-row"
-                  data-ocid="card.link"
-                >
-                  <span className="contact-icon">📞</span>
-                  <span>{card.phone}</span>
-                </a>
-              )}
-              {card?.email && (
-                <a
-                  href={`mailto:${card.email}`}
-                  className="contact-row"
-                  data-ocid="card.link"
-                >
-                  <span className="contact-icon">📧</span>
-                  <span>{card.email}</span>
-                </a>
-              )}
-              {card?.location && (
-                <div className="contact-row">
-                  <span className="contact-icon">📍</span>
-                  <span>{card.location}</span>
-                </div>
-              )}
-            </motion.div>
+          <footer className="card-footer">
+            <p className="footer-cta">
+              Get your digital card from InstaSite Kerala
+            </p>
+            <p>© {year} InstaSite Kerala | All Rights Reserved</p>
 
-            <div className="divider" />
-
-            {/* Full-width action buttons */}
-            <motion.div
-              className="actions-list"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.44, duration: 0.4 }}
-              data-ocid="card.section"
-            >
-              <motion.button
+            {/* Subtle admin login */}
+            {!identity && (
+              <button
                 type="button"
-                onClick={() => card && saveContact(card)}
-                className="action-pill action-pill-amber"
-                data-ocid="card.save.button"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.46 }}
-                whileTap={{ scale: 0.97 }}
+                onClick={() => login()}
+                className="admin-login-link"
+                data-ocid="admin.primary_button"
+                disabled={isLoggingIn || checkingAdmin}
               >
-                <span className="pill-icon">💾</span>
-                <span>Save Contact</span>
-              </motion.button>
-
-              {card?.phone && (
-                <motion.a
-                  href={`tel:${card.phone}`}
-                  className="action-pill action-pill-blue"
-                  data-ocid="card.call.button"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.5 }}
-                  whileTap={{ scale: 0.97 }}
-                >
-                  <span className="pill-icon">📞</span>
-                  <span>Call Now</span>
-                </motion.a>
-              )}
-
-              {card?.phone && (
-                <motion.a
-                  href={`https://wa.me/${card.phone.replace(/[^0-9]/g, "")}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="action-pill action-pill-green"
-                  data-ocid="card.whatsapp.button"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.54 }}
-                  whileTap={{ scale: 0.97 }}
-                >
-                  <span className="pill-icon">💬</span>
-                  <span>WhatsApp</span>
-                </motion.a>
-              )}
-
-              {card?.location && (
-                <motion.a
-                  href={`https://maps.google.com/?q=${encodeURIComponent(`${card.location},India`)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="action-pill action-pill-red"
-                  data-ocid="card.location.button"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.58 }}
-                  whileTap={{ scale: 0.97 }}
-                >
-                  <span className="pill-icon">📍</span>
-                  <span>Location</span>
-                </motion.a>
-              )}
-
-              {card?.website && (
-                <motion.a
-                  href={card.website}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="action-pill action-pill-purple"
-                  data-ocid="card.website.button"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.62 }}
-                  whileTap={{ scale: 0.97 }}
-                >
-                  <span className="pill-icon">🌐</span>
-                  <span>Visit Website</span>
-                </motion.a>
-              )}
-
-              <motion.button
-                type="button"
-                onClick={() => card && shareCard(card)}
-                className="action-pill action-pill-whatsapp"
-                data-ocid="card.share.button"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.66 }}
-                whileTap={{ scale: 0.97 }}
-              >
-                <span className="pill-icon">🔗</span>
-                <span>Share this Card</span>
-              </motion.button>
-
-              <motion.button
-                type="button"
-                onClick={() => setShowQR((v) => !v)}
-                className="action-pill action-pill-cyan"
-                data-ocid="card.qr.button"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.7 }}
-                whileTap={{ scale: 0.97 }}
-              >
-                <span className="pill-icon">📱</span>
-                <span>{showQR ? "Hide QR Code" : "Show QR Code"}</span>
-              </motion.button>
-            </motion.div>
-
-            {/* QR Code */}
-            <AnimatePresence>
-              {showQR && vcard && (
-                <motion.div
-                  className="qr-section"
-                  initial={{ opacity: 0, height: 0, marginTop: 0 }}
-                  animate={{ opacity: 1, height: "auto", marginTop: 8 }}
-                  exit={{ opacity: 0, height: 0, marginTop: 0 }}
-                  transition={{ duration: 0.3 }}
-                  data-ocid="card.panel"
-                >
-                  <p className="qr-label">Scan to Save Contact Instantly</p>
-                  <div className="qr-box">
-                    <img
-                      src={`https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=${encodeURIComponent(vcard)}&color=0b3d91&bgcolor=ffffff`}
-                      alt={`QR Code to save ${card?.name || ""} contact`}
-                      width={140}
-                      height={140}
-                      style={{ display: "block" }}
-                    />
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-
-            <div className="divider" />
-
-            <footer className="card-footer">
-              <p className="footer-cta">
-                Get your digital card from InstaSite Kerala
-              </p>
-              <p>© {year} InstaSite Kerala | All Rights Reserved</p>
-
-              {/* Subtle admin login */}
-              {!identity && (
-                <button
-                  type="button"
-                  onClick={() => login()}
-                  className="admin-login-link"
-                  data-ocid="admin.primary_button"
-                  disabled={isLoggingIn || checkingAdmin}
-                >
-                  {isLoggingIn ? "Logging in..." : "Admin Login"}
-                </button>
-              )}
-            </footer>
-          </motion.div>
-        )}
+                {isLoggingIn ? "Logging in..." : "Admin Login"}
+              </button>
+            )}
+          </footer>
+        </div>
       </main>
 
       {/* Admin Panel */}
-      <AnimatePresence>
-        {showAdmin && card && (
-          <AdminModal
-            card={card}
-            onClose={() => setShowAdmin(false)}
-            onSaved={(updatedCard) => {
-              setCard(updatedCard);
-              setShowAdmin(false);
-            }}
-          />
-        )}
-      </AnimatePresence>
+      {showAdmin && (
+        <AdminModal
+          card={card}
+          onClose={() => setShowAdmin(false)}
+          onSaved={(updatedCard) => {
+            setCard(updatedCard);
+            setShowAdmin(false);
+          }}
+        />
+      )}
     </div>
   );
 }
