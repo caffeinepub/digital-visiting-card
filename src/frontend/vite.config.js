@@ -19,18 +19,15 @@ export default defineConfig({
     sourcemap: false,
     minify: "esbuild",
     target: "es2020",
-    cssMinify: true,
     rollupOptions: {
       output: {
         manualChunks: {
-          "vendor-react": ["react", "react-dom"],
-          "vendor-icp": ["@dfinity/agent", "@dfinity/auth-client", "@dfinity/identity"],
+          vendor: ["react", "react-dom"],
         },
       },
     },
   },
   esbuild: {
-    legalComments: "none",
     drop: ["console", "debugger"],
   },
   css: {
