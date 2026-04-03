@@ -1,50 +1,40 @@
 # InstaSite Kerala - Digital Card
 
 ## Current State
-
-A dynamic PWA digital visiting card for Nagarajan (Sales Officer, InstaSite Kerala).
-- React/TypeScript frontend on Caffeine with Motoko backend
-- Glassmorphic card UI with profile photo, 7 action buttons (Save Contact, Call, WhatsApp, Location, Website, Share, QR Code)
-- Admin panel via Internet Identity for editing card data
-- SEO: meta tags, Open Graph, JSON-LD, geo tags, sitemap
-- Performance optimizations: CSS animations (no framer-motion), no backdrop-filter blur, static data render
-- `minify: false` in vite.config.js (performance issue - JS unminified)
-- Missing: Services section, Image gallery, Google Maps embed, Contact/booking form, Malayalam language toggle
-- WhatsApp button exists but not visually prominent as primary CTA
-- Header has brand title and tagline but not visually impactful
+The app is a premium mobile-first digital visiting card for Nagarajan / InstaSite Kerala. It has:
+- Brand header with tagline and 5-star rating
+- Profile photo, contact info, action buttons (WhatsApp, Save Contact, Call, Location, Visit Website, Share, QR)
+- Services grid, gallery, Google Maps embed, contact/booking form
+- Malayalam/English language toggle
+- Admin panel via Internet Identity
 
 ## Requested Changes (Diff)
 
 ### Add
-- **Strong hero header**: Large brand title, clear tagline ("Kerala's #1 Digital Business Card Service"), prominent value proposition
-- **Big WhatsApp CTA button**: Prominent, large WhatsApp button at the top of the card as primary call-to-action, above all other buttons
-- **Services section**: Cards showing InstaSite Kerala services (Digital Business Cards, Business Websites, Social Media Branding, etc.)
-- **Image gallery**: Photo gallery section with sample work/portfolio images (placeholder images, admin can update)
-- **Google Maps embed**: Embedded Google Maps showing Thiruvananthapuram location
-- **Contact/booking form**: Form with Name, Phone, Email, Message fields + submit via WhatsApp or store to backend
-- **Malayalam language toggle**: Button to switch UI text between English and Malayalam
-- **Enhanced SEO**: Improved meta description with Malayalam keywords, better structured data
+- Testimonial/review section with 3 real-sounding user reviews (name, business type, star rating, quote)
+- "Live Demo" preview cards section above the fold (after brand header, before profile) showing 3 sample card types
+- "Why Choose Us" section with 4 unique differentiators (speed, no-code, WhatsApp integration, lifetime support)
+- Pricing/free trial section showing 3 tiers (Free, Pro, Business) with clear CTAs
+- Nav bar at top with text labels alongside icons (Home, Services, Gallery, Contact)
 
 ### Modify
-- **Performance**: Fix `minify: false` to `minify: 'esbuild'` in vite.config.js
-- **WhatsApp button styling**: Make it the most prominent button in the action list (larger, green glow, pulsing animation)
-- **Header design**: More impactful hero section with gradient text, tagline, and sub-value proposition
-- **Overall design**: More modern, premium feel — improved spacing, typography, section separators
+- Main WhatsApp CTA text → "Chat on WhatsApp – Get Your Free Card Now"
+- Brand tagline → stronger: "Kerala's Fastest Digital Business Cards"
+- Sub-tagline → "Ready in 30 Minutes. No Coding. No Hassle."
+- Footer CTA → "Create Your Free Website Now – No Coding Needed"
+- Services section descriptions → more benefit-driven, specific to Kerala business owners
+- Happy clients count → "500+ Kerala Businesses Trust Us"
+- Header navigation: add clear text labels, not icon-only
 
 ### Remove
-- Nothing to remove
+- Nothing removed; only additions and modifications
 
 ## Implementation Plan
-
-1. Fix vite.config.js minification (performance)
-2. Update index.html SEO meta tags with Malayalam keywords
-3. Rewrite App.tsx to add:
-   a. Language toggle state (English/Malayalam) in header
-   b. Enhanced hero header section
-   c. Prominent WhatsApp CTA as first button
-   d. Services section after action buttons
-   e. Image gallery section
-   f. Google Maps embed section (Thiruvananthapuram)
-   g. Contact/booking form section
-4. Update index.css for new sections and improved premium design
-5. Backend unchanged (Card model is sufficient; contact form submits via WhatsApp deep link)
+1. Update translations (en + ml) with new text, testimonials, pricing, why-choose-us data, nav labels, demo cards
+2. Add `TestimonialsSection` component inline in App.tsx
+3. Add `LiveDemoSection` component (above profile area, below brand header)
+4. Add `WhyChooseUsSection` component
+5. Add `PricingSection` component
+6. Add top `NavBar` component with text + icon labels
+7. Update existing text strings (CTA, taglines, service descriptions)
+8. Add CSS styles for all new sections
