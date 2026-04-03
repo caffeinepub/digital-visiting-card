@@ -12,6 +12,7 @@ const AdminModal = lazy(() => import("./components/AdminModal"));
 const DEFAULT_PROFILE_IMG = `${import.meta.env.BASE_URL}assets/uploads/nagarajan-profile.png`;
 const ADMIN_TOKEN =
   "1e581627646314b614bb87163831cc22942989b99300e6114068c0d2ca77185a";
+const EXTERNAL_WEBSITE = "https://instasite.in";
 
 const FALLBACK_CARD: Card = {
   name: "Nagarajan",
@@ -21,7 +22,7 @@ const FALLBACK_CARD: Card = {
   phone: "+918838510443",
   email: "cynorlux@gmail.com",
   location: "Thiruvananthapuram, Kerala",
-  website: "https://instasite.in",
+  website: EXTERNAL_WEBSITE,
   profilePhotoUrl: "",
 };
 
@@ -148,6 +149,17 @@ const t = {
 type Lang = "en" | "ml";
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
+function getSafeWebsiteUrl(website: string): string {
+  if (!website) return EXTERNAL_WEBSITE;
+  try {
+    const url = new URL(website);
+    if (url.hostname === window.location.hostname) return EXTERNAL_WEBSITE;
+    return website;
+  } catch {
+    return EXTERNAL_WEBSITE;
+  }
+}
+
 function buildVCard(card: Card): string {
   return `BEGIN:VCARD
 VERSION:3.0
@@ -157,7 +169,7 @@ ORG:${card.company}
 TITLE:${card.jobTitle}
 TEL;TYPE=CELL:${card.phone}
 EMAIL:${card.email}
-URL:${card.website}
+URL:${EXTERNAL_WEBSITE}
 END:VCARD`;
 }
 
@@ -302,6 +314,7 @@ export default function App() {
     : DEFAULT_PROFILE_IMG;
   const vcard = buildVCard(card);
   const whatsappPhone = card.phone.replace(/[^0-9]/g, "");
+  const safeWebsiteUrl = getSafeWebsiteUrl(card.website);
 
   function handleFormSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -457,18 +470,16 @@ export default function App() {
               </a>
             )}
 
-            {card.website && (
-              <a
-                href={card.website}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="action-pill action-pill-purple"
-                data-ocid="card.website.button"
-              >
-                <span className="pill-icon">🌐</span>
-                <span>{txt.visitWebsite}</span>
-              </a>
-            )}
+            <a
+              href={safeWebsiteUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="action-pill action-pill-purple"
+              data-ocid="card.website.button"
+            >
+              <span className="pill-icon">🌐</span>
+              <span>{txt.visitWebsite}</span>
+            </a>
 
             <button
               type="button"
